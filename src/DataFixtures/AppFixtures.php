@@ -27,6 +27,7 @@ class AppFixtures extends Fixture
             $plainTextPassword
         );
         $user->setPassword($hashedPassword);
+        $user->setBalance(0);
         $manager->persist($user);
 
         $superAdmin = new BillingUser();
@@ -37,6 +38,7 @@ class AppFixtures extends Fixture
         );
         $superAdmin->setPassword($hashedPassword);
         $superAdmin->setRoles(['ROLE_SUPER_ADMIN']);
+        $superAdmin->setBalance(0);
         $manager->persist($superAdmin);
 
 

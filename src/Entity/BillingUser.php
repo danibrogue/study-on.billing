@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\DTO\UserDTO;
 use App\Repository\BillingUserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-//@ORM\Entity(repositoryClass=BillingUserRepository::class)
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BillingUserRepository")
@@ -37,6 +38,11 @@ class BillingUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $balance = 0;
 
     public function getId(): ?int
     {
@@ -125,5 +131,26 @@ class BillingUser implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public static function fromDTO(UserDTO $userDTO, UserPasswordHasherInterface $passwordHasher)
+    {
+        $user = new self();
+        $user->setEmail($userDTO->getUsername());
+        $user->setPassword($passwordHasher->hashPassword($user, $userDTO->getPassword()));
+        $user->setRoles(['ROLE_USER']);
+        return $user;
+    }
+
+    public function getBalance(): ?float
+    {
+        return $this->balance;
+    }
+
+    public function setBalance(float $balance): self
+    {
+        $this->balance = $balance;
+
+        return $this;
     }
 }

@@ -3,3 +3,7 @@
 #    controller: App\Controller\DefaultController::index
 #api_login_check:
   #: /api/v1/auth
+
+#api_register:
+  #path: /api/v1/register
+  #controller: App\Controller\ApiController::register
