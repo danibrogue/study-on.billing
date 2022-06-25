@@ -6,18 +6,14 @@ use App\DTO\UserDTO;
 use App\Entity\BillingUser;
 use App\Repository\BillingUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\Persistence\ObjectManager;
-use http\Message;
 use JMS\Serializer\SerializerBuilder;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApiController extends AbstractController
@@ -63,4 +59,25 @@ class ApiController extends AbstractController
         return $this->json(['token' => $token], Response::HTTP_CREATED);
     }
 
+    /**
+     * @Route("/api/v1/current", name="api_current", methods={"GET"})
+     */
+    public function current(Security $security): Response
+    {
+        $user = $security->getUser();
+        if (!$user) {
+            return $this->json([
+                'status_code' => Response::HTTP_UNAUTHORIZED,
+                'message' => 'Пользователь не авторизован'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->json(
+            ['username' => $user->getEmail(),
+                'roles' => $user->getRoles(),
+                'balance' => $user->getBalance(),
+            ],
+            Response::HTTP_OK
+        );
+    }
 }
