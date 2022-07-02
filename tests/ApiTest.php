@@ -59,7 +59,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(401);
+        $this->assertResponseCode(Response::HTTP_UNAUTHORIZED);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -82,7 +82,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(201);
+        $this->assertResponseCode(Response::HTTP_CREATED);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -105,7 +105,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -129,7 +129,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -150,7 +150,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -174,7 +174,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
@@ -195,7 +195,7 @@ class ApiTest extends AbstractTest
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $user);
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
             'application/json'
