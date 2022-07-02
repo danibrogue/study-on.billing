@@ -23,7 +23,7 @@ class UserDTO
      * @var string
      *
      * @Assert\NotBlank(message="Поле пароля не должно быть пустым")
-     * @Assert\Length(min=6)
+     * @Assert\Length(min=6, minMessage="Пароль должен быть длиннее 6 символов")
      * @Serializer\Type("string")
      */
     private $password;

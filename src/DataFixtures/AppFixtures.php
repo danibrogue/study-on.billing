@@ -41,8 +41,6 @@ class AppFixtures extends Fixture
         $superAdmin->setBalance(0);
         $manager->persist($superAdmin);
 
-
-
         $manager->flush();
     }
 }
