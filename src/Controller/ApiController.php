@@ -6,6 +6,8 @@ use App\DTO\UserDTO;
 use App\Entity\BillingUser;
 use App\Repository\BillingUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
+use Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken;
 use JMS\Serializer\SerializerBuilder;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Security as NelmioSecurity;
+use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 
 class ApiController extends AbstractController
 {
@@ -45,10 +48,8 @@ class ApiController extends AbstractController
      *     response="200",
      *     description="Авторизация прошла успешно",
      *     @OA\JsonContent(
-     *          @OA\Property(
-     *          property="code",
-     *          type="string",
-     *          )
+     *        @OA\Property(property="token", type="string"),
+     *        @OA\Property(property="refreshToken", type="string"),
      *      )
      * )
      * @OA\Response(
@@ -97,7 +98,7 @@ class ApiController extends AbstractController
      *          @OA\Property(
      *          property="username",
      *          type="string",
-     *          example="rex@study-on.local"
+     *          example="ceasar@study-on.local"
      *          ),
      *          @OA\Property(
      *          property="password",
@@ -118,7 +119,10 @@ class ApiController extends AbstractController
      *          property="roles",
      *          type="array",
      *          @OA\Items(type="string")
-     *          )
+     *          ),
+     *          @OA\Property(
+     *          property="refreshToken",
+     *          type="string")
      *      )
      * )
      * @OA\Response(
@@ -173,7 +177,9 @@ class ApiController extends AbstractController
         ValidatorInterface $validator,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $passwordHasher,
-        BillingUserRepository $userRepository): Response
+        BillingUserRepository $userRepository,
+        RefreshTokenManagerInterface $refreshTokenManager,
+        RefreshTokenGeneratorInterface $refreshTokenGenerator): Response
     {
         $serializer = SerializerBuilder::create()->build();
         $userDTO = $serializer->deserialize($request->getContent(), UserDTO::class, 'json');
@@ -193,8 +199,24 @@ class ApiController extends AbstractController
         $user = BillingUser::fromDTO($userDTO, $passwordHasher);
         $manager->persist($user);
         $manager->flush();
+
+//        $refreshToken = $refreshTokenManager->create();
+//        $refreshToken->setUsername($user->getEmail());
+//        $refreshToken->setRefreshToken();
+//        $refreshToken->setValid((new \DateTime())->modify('+1 month'));
+//        $refreshTokenManager->save($refreshToken); //в $refreshToken->getRefreshToken() строка токена
+
+
+        $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, (new \DateTime())->modify('+1 month')->getTimestamp());
+        $refreshTokenManager->save($refreshToken);
+
         $token = $JWTTokenManager->create($user);
-        return $this->json(['token' => $token, 'roles' => $user->getRoles()], Response::HTTP_CREATED);
+//        return $this->json(['token' => $token, 'roles' => $user->getRoles()], Response::HTTP_CREATED);
+        return $this->json([
+            'token' => $token,
+            'roles' => $user->getRoles(),
+            'refresh_token' => $refreshToken->getRefreshToken()
+            ], Response::HTTP_CREATED);
     }
 
     /**
@@ -269,5 +291,13 @@ class ApiController extends AbstractController
             ],
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @Route("/api/v1/token/refresh", name="refresh", methods={"POST"})
+     */
+    public function refresh(Request $request, RefreshToken $refreshService)
+    {
+        return $refreshService->refresh($request);
     }
 }
