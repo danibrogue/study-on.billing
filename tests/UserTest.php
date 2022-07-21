@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\AppFixtures;
+use App\DataFixtures\UserFixture;
 use App\Entity\BillingUser;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Panther\PantherTestCase;
@@ -13,7 +13,7 @@ class UserTest extends AbstractTest
 
     protected function getFixtures(): array
     {
-        return [AppFixtures::class];
+        return [UserFixture::class];
     }
 
     protected function setUp(): void

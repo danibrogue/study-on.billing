@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use Symfony\Component\Panther\PantherTestCase;
 use App\Tests\AbstractTest;
-use App\DataFixtures\AppFixtures;
+use App\DataFixtures\UserFixture;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiTest extends AbstractTest
@@ -13,7 +13,7 @@ class ApiTest extends AbstractTest
 
     protected function getFixtures(): array
     {
-        return [AppFixtures::class];
+        return [UserFixture::class];
     }
 
     protected function setUp(): void

@@ -7,7 +7,7 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\BillingUser;
 
-class AppFixtures extends Fixture
+class UserFixture extends Fixture
 {
     private $passwordHasher;
 
@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
             $plainTextPassword
         );
         $user->setPassword($hashedPassword);
-        $user->setBalance(0);
+        $user->setBalance(20000);
         $manager->persist($user);
 
         $superAdmin = new BillingUser();

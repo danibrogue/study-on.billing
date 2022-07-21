@@ -89,7 +89,7 @@ class TransactionFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            AppFixtures::class,
+            UserFixture::class,
             CourseFixture::class
         ];
     }
