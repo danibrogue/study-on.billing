@@ -12,6 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Course
 {
+
+    private const COURSE_TYPE = [
+      1 => 'free',
+      2 => 'rent',
+      3 => 'full'
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -61,9 +68,9 @@ class Course
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): ?string
     {
-        return $this->type;
+        return self::COURSE_TYPE[$this->type];
     }
 
     public function setType(int $type): self

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Course;
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Util\Exception;
 
 /**
  * @extends ServiceEntityRepository<Transaction>
@@ -37,6 +40,38 @@ class TransactionRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findSomeBy(array $filters, $user, EntityManagerInterface $em): array
+    {
+        $query = $this->createQueryBuilder('t');
+        if (!$filters) {
+            throw new \Exception('Фильтры не установлены');
+        }
+        if ($filters['type']) {
+            $query
+                ->andWhere('t.type = :type')
+                ->setParameter('type', $filters['type']);
+        }
+        if ($filters['course_code']) {
+            $course = $em->getRepository(Course::class)->findOneBy([
+                'code' => $filters['course_code']
+            ]);
+            $query
+                ->andWhere('t.course = :course')
+                ->setParameter('course', $course);
+        }
+        if ($filters['skip_expired']) {
+            $date = new \DateTimeImmutable();
+            $query
+                ->andWhere('t.expireTime > :date OR t.expireTime IS NULL')
+                ->setParameter('date', $date);
+        }
+        return $query
+            ->andWhere('t.customer = :customer')
+            ->setParameter('customer', $user)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

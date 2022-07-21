@@ -10,6 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Transaction
 {
+    private const OPERATION_TYPE = [
+        1 => 'deposit',
+        2 => 'payment'
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -47,6 +52,11 @@ class Transaction
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $expireTime;
+
+    public function __construct()
+    {
+        $this->setCreateTime(new \DateTimeImmutable());
+    }
 
     public function getId(): ?int
     {
