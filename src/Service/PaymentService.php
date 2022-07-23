@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 class PaymentService
 {
     private const OPERATION_TYPE = [
-        'payment' => 1,
-        'deposit' => 2
+        1 => 'deposit',
+        2 => 'payment'
     ];
 
     private $em;
@@ -20,6 +20,29 @@ class PaymentService
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+    }
+
+    public function deposit(billingUser $user, float $amount): Transaction
+    {
+        $this->em->getConnection()->beginTransaction();
+
+        try{
+            $transaction = new Transaction();
+            $transaction->setCustomer($user);
+            $transaction->setAmount($amount);
+            $transaction->setType(self::OPERATION_TYPE['deposit']);
+
+            $user->setBalance($user->getBalance() + $amount);
+
+            $this->em->persist($transaction);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $exception) {
+            $this->em->getConnection()->rollBack();
+            throw new \Exception($exception->getMessage(), $exception->getCode());
+        }
+
+        return $transaction;
     }
 
     public function payment(billingUser $user, Course $course): Transaction
@@ -32,6 +55,7 @@ class PaymentService
             }
 
             $transaction = new Transaction();
+            $transaction->setCustomer($user);
             $transaction->setCourse($course);
             $transaction->setAmount($course->getPrice());
             $transaction->setType(self::OPERATION_TYPE['payment']);

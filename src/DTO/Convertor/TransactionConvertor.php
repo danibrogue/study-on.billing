@@ -6,6 +6,7 @@ use App\DTO\TransactionDTO;
 
 class TransactionConvertor
 {
+
     public static function toDTO(array $transactions): array
     {
         $transactionsDTO = [];
@@ -15,9 +16,9 @@ class TransactionConvertor
             $DTO = new TransactionDTO();
             $DTO->type = $transaction->getType();
             $DTO->amount = $transaction->getAmount();
-            $DTO->courseCode = $transaction->getCourse()->getCode();
             $DTO->createdAt = $transaction->getCreateTime();
             $DTO->id = $transaction->getId();
+            $DTO->courseCode = $DTO->type === 2 ? $transaction->getCourse()->getCode() : null;
 
             $transactionsDTO[] = $DTO;
         }
