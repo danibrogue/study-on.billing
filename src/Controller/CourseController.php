@@ -15,8 +15,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use App\Service\UserService;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Security as NelmioSecurity;
 
 
 /**
@@ -32,6 +33,10 @@ class CourseController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/courses/",
+     *     description="Список курсов"
+     * )
      * @Route("/", name="app_course", methods={"GET"})
      */
     public function index(
@@ -45,6 +50,10 @@ class CourseController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/courses/{code}",
+     *     description="Список курсов"
+     * )
      * @Route("/{code}", name="app_course_show", methods={"GET"})
      */
     public function show(
@@ -59,6 +68,36 @@ class CourseController extends AbstractController
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/v1/courses/{code}/pay",
+     *     description="Оплата курса"
+     * )
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *        @OA\Property(
+     *     property="token",
+     *     type="string"),
+     *     ),
+     * )
+     * @OA\Response(
+     *     response="201",
+     *     description="Курс оплачен",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="success", type="bool"),
+     *          @OA\Property(property="course_type", type="string"),
+     *          @OA\Property(property="expires_at", type="datetime")
+     *      )
+     * )
+     *
+     * @OA\Response(
+     *     response="406",
+     *     description="Недостаточно средств",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="code", type="string"),
+     *          @OA\Property(property="message", type="string")
+     *      )
+     * )
      * @Route("/{code}/pay", name="app_course_pay", methods={"POST"})
      */
     public function pay(

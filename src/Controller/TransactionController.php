@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Security as NelmioSecurity;
 
 class TransactionController extends AbstractController
 {
@@ -28,6 +30,28 @@ class TransactionController extends AbstractController
     ];
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/transactions/",
+     *     description="Список транзакций"
+     * )
+     *  @OA\Parameter(
+     *     name="filter[type]",
+     *     in="query",
+     *     required=false,
+     *     description="The field used to order rewards"
+     * )
+     *  @OA\Parameter(
+     *     name="filter[course_code]",
+     *     in="query",
+     *     required=false,
+     *     description="The field used to order rewards"
+     * )
+     *  @OA\Parameter(
+     *     name="filter[skip_expired]",
+     *     in="query",
+     *     required=false,
+     *     description="The field used to order rewards"
+     * )
      * @Route("/api/v1/transactions", name="app_transaction", methods={"GET"})
      */
     public function index(
