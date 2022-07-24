@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 class PaymentService
 {
     private const OPERATION_TYPE = [
-        1 => 'deposit',
-        2 => 'payment'
+        'deposit' => 1,
+        'payment' => 2
     ];
 
     private $em;
