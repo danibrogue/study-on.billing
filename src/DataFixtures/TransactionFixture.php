@@ -78,7 +78,7 @@ class TransactionFixture extends Fixture implements DependentFixtureInterface
             $newTransaction->setCustomer($transaction['customer']);
             $newTransaction->setCreateTime($transaction['createTime']);
             $newTransaction->setAmount($transaction['amount']);
-            if (isset($transaction['expiresAt'])) {
+            if (isset($transaction['expireTime'])) {
                 $newTransaction->setExpireTime($transaction['expireTime']);
             }
             $manager->persist($newTransaction);
