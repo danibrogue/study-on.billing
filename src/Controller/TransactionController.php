@@ -39,6 +39,12 @@ class TransactionController extends AbstractController
      *     in="header",
      *     description="The field used to order rewards"
      * )
+     * @OA\Parameter(
+     *     name="Content-Type",
+     *     in="header",
+     *     example="application/json",
+     *     description="The field used to order rewards"
+     * )
      *  @OA\Parameter(
      *     name="filters[type]",
      *     in="query",
