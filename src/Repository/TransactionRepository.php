@@ -48,12 +48,13 @@ class TransactionRepository extends ServiceEntityRepository
         if (!$filters) {
             throw new \Exception('Фильтры не установлены');
         }
-        if ($filters['type']) {
+        if (isset($filters['type'])) {
             $query
                 ->andWhere('t.type = :type')
                 ->setParameter('type', $filters['type']);
         }
-        if ($filters['course_code']) {
+
+        if (isset($filters['course_code'])) {
             $course = $em->getRepository(Course::class)->findOneBy([
                 'code' => $filters['course_code']
             ]);
@@ -61,7 +62,7 @@ class TransactionRepository extends ServiceEntityRepository
                 ->andWhere('t.course = :course')
                 ->setParameter('course', $course);
         }
-        if ($filters['skip_expired']) {
+        if (isset($filters['skip_expired'])) {
             $date = new \DateTimeImmutable();
             $query
                 ->andWhere('t.expireTime > :date OR t.expireTime IS NULL')

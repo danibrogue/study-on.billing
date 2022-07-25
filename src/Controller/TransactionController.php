@@ -34,20 +34,25 @@ class TransactionController extends AbstractController
      *     path="/api/v1/transactions/",
      *     description="Список транзакций"
      * )
+     * @OA\Parameter(
+     *     name="token",
+     *     in="header",
+     *     description="The field used to order rewards"
+     * )
      *  @OA\Parameter(
-     *     name="filter[type]",
+     *     name="filters[type]",
      *     in="query",
      *     required=false,
      *     description="The field used to order rewards"
      * )
      *  @OA\Parameter(
-     *     name="filter[course_code]",
+     *     name="filters[course_code]",
      *     in="query",
      *     required=false,
      *     description="The field used to order rewards"
      * )
      *  @OA\Parameter(
-     *     name="filter[skip_expired]",
+     *     name="filters[skip_expired]",
      *     in="query",
      *     required=false,
      *     description="The field used to order rewards"
@@ -61,16 +66,11 @@ class TransactionController extends AbstractController
         Request $request
     ): Response
     {
-        $token = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR)['token'];
+        $token = $request->headers->get('token');
         $user = $this->us->getUserByToken($token);
 
 
-        $filters = [
-            'type' => $request->query->get('type') ? self::OPERATION_TYPE[$request->query->get('type')] : null,
-            'course_code' => $request->query->get('course_code'),
-            'skip_expired' => $request->query->get('skip_expired')
-        ];
-
+        $filters = $request->query->get('filters');
         $transactions = $transactionRepository->findSomeBy($filters, $user, $em);
         $transactionsDTO = TransactionConvertor::toDTO($transactions);
         return JsonResponse::fromJsonString($serializer->serialize($transactionsDTO, 'json'));
