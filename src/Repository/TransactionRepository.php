@@ -42,7 +42,7 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
-    public function findSomeBy(array $filters, $user, EntityManagerInterface $em): array
+    public function findSomeBy(?array $filters, $user, EntityManagerInterface $em): array
     {
         $query = $this->createQueryBuilder('t');
         if (!$filters) {

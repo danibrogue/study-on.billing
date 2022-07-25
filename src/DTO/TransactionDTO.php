@@ -30,4 +30,9 @@ class TransactionDTO
      * @Serializer\Type("float")
      */
     public $amount;
+
+    /**
+     * @Serializer\Type("DateTimeImmutable")
+     */
+    public $expiresAt;
 }

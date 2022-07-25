@@ -19,6 +19,7 @@ class TransactionConvertor
             $DTO->createdAt = $transaction->getCreateTime();
             $DTO->id = $transaction->getId();
             $DTO->courseCode = $DTO->type === 2 ? $transaction->getCourse()->getCode() : null;
+            $DTO->expiresAt = is_null($transaction->getExpireTime()) ? null : $transaction->getExpireTime();
 
             $transactionsDTO[] = $DTO;
         }
